@@ -18,31 +18,38 @@ require __DIR__.'/../vendor/autoload.php';
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
 // =================================================================
-// 🚑 PERBAIKAN KHUSUS VERCEL (MULAI)
+// 🚑 PERBAIKAN KHUSUS VERCEL (ULTIMATE VERSION)
 // =================================================================
-// Kode ini memindahkan penyimpanan cache/log ke folder sementara (/tmp)
-// karena Vercel tidak mengizinkan penulisan di folder biasa.
-
 if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
-    $path = '/tmp/storage';
-    $app->useStoragePath($path);
+    // A. Setup Folder Storage di /tmp
+    $storagePath = '/tmp/storage';
+    $app->useStoragePath($storagePath);
 
-    // Buat folder-folder penting di dalam /tmp secara otomatis
-    if (!is_dir($path . '/framework/views')) {
-        mkdir($path . '/framework/views', 0777, true);
-    }
-    if (!is_dir($path . '/framework/cache')) {
-        mkdir($path . '/framework/cache', 0777, true);
-    }
-    if (!is_dir($path . '/framework/sessions')) {
-        mkdir($path . '/framework/sessions', 0777, true);
-    }
-    if (!is_dir($path . '/logs')) {
-        mkdir($path . '/logs', 0777, true);
+    // B. Setup Folder Bootstrap Cache di /tmp (INI YANG BIKIN ERROR 500 TADI)
+    $bootstrapCachePath = $storagePath . '/bootstrap/cache';
+    
+    // Paksa Laravel baca/tulis cache config di /tmp
+    $_ENV['APP_PACKAGES_CACHE'] = $bootstrapCachePath . '/packages.php';
+    $_ENV['APP_SERVICES_CACHE'] = $bootstrapCachePath . '/services.php';
+    $_ENV['APP_ROUTES_CACHE'] = $bootstrapCachePath . '/routes-v7.php';
+    $_ENV['APP_EVENTS_CACHE'] = $bootstrapCachePath . '/events.php';
+    $_ENV['APP_CONFIG_CACHE'] = $bootstrapCachePath . '/config.php';
+
+    // C. Buat Struktur Folder Otomatis (Jika belum ada)
+    $folders = [
+        $storagePath . '/framework/views',
+        $storagePath . '/framework/cache',
+        $storagePath . '/framework/sessions',
+        $storagePath . '/logs',
+        $bootstrapCachePath, // Folder bootstrap juga kita buat di /tmp
+    ];
+
+    foreach ($folders as $folder) {
+        if (!is_dir($folder)) {
+            mkdir($folder, 0777, true);
+        }
     }
 }
-// =================================================================
-// 🚑 PERBAIKAN KHUSUS VERCEL (SELESAI)
 // =================================================================
 
 // 4. Jalankan Aplikasi
