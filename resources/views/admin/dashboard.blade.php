@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - DentalCare Expert</title>
-    <link rel="shortcut icon" href="/images/favicon_fixed.png" type="image/png">
+    <link rel="icon" href="/images/gigi.png" type="image/png">
+    <link rel="shortcut icon" href="/images/gigi.png" type="image/png">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Font Awesome -->
