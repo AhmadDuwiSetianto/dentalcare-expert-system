@@ -1,12 +1,17 @@
 {
     "version": 2,
     "framework": null,
-    "functions": {
-        "public/index.php": {
-            "runtime": "vercel-php@0.6.0"
+    "builds": [
+        {
+            "src": "/public/index.php",
+            "use": "vercel-php@0.6.0"
         }
-    },
+    ],
     "routes": [
+        {
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
         {
             "src": "/images/(.*)",
             "dest": "/public/images/$1"
@@ -19,10 +24,5 @@
             "src": "/(.*)",
             "dest": "/public/index.php"
         }
-    ],
-    "env": {
-        "APP_ENV": "production",
-        "APP_DEBUG": "true",
-        "APP_URL": "https://dentalcare-expert-system-ado5.vercel.app"
-    }
+    ]
 }
